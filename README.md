@@ -1,1 +1,1 @@
-Pour débloquer le contrat, il faut la bonne clé qui se trouve dans le tableau de données privé mais
+Pour déverrouiller le contrat, nous devons accéder directement aux données stockées. Le contrat stocke une clé dans le tableau data, dont le troisième élément se trouve dans l'emplacement de stockage 5. En lisant cet emplacement, nous récupérons la clé, puis la convertissons en bytes16 pour appeler la fonction unlock avec cette clé. Cette approche utilise un script pour accéder directement à la mémoire du contrat et déverrouiller le contrat.

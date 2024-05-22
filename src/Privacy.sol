@@ -1,31 +1,30 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../src/Privacy.sol";
-import "forge-std/Script.sol";
-import "forge-std/console.sol";
+contract Privacy {
+    bool public locked = true;
+    uint256 public ID = block.timestamp;
+    uint8 private flattening = 10;
+    uint8 private denomination = 255;
+    uint16 private awkwardness = uint16(block.timestamp);
+    bytes32[3] private data;
 
-contract PrivacySolution is Script {
-
-    Privacy public privacyInstance;
-
-    function setUp() public {
-        bytes32[3] memory data = [
-            keccak256(abi.encodePacked("data1")),
-            keccak256(abi.encodePacked("data2")),
-            keccak256(abi.encodePacked("data3"))
-        ];
-        privacyInstance = new Privacy(data);
+    constructor(bytes32[3] memory _data) {
+        data = _data;
     }
 
-    function run() external {
-        vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        bytes32[3] memory data = privacyInstance.data();
-        bytes32 key = keccak256(data[2]);
-        bytes16 key16 = bytes16(key);
-        console.log("Before: ", privacyInstance.locked());
-        privacyInstance.unlock(key16);
-        console.log("After: ", privacyInstance.locked());
-        vm.stopBroadcast();
+    function unlock(bytes16 _key) public {
+        require(_key == bytes16(data[2]));
+        locked = false;
     }
+
+    /*
+    A bunch of super advanced solidity algorithms...
+
+      ,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`
+      .,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,
+      *.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^         ,---/V\
+      `*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.    ~|__(o.o)
+      ^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'  UU  UU
+    */
 }

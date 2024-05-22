@@ -6,10 +6,10 @@ import "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 contract PrivacySolution is Script {
-
     Privacy public privacyInstance;
 
     function setUp() public {
+        // Deploy the Privacy contract with known data
         bytes32[3] memory data = [
             keccak256(abi.encodePacked("data1")),
             keccak256(abi.encodePacked("data2")),
@@ -19,13 +19,19 @@ contract PrivacySolution is Script {
     }
 
     function run() external {
+        // Start the broadcast
         vm.startBroadcast(vm.envUint("PRIVATE_KEY"));
-        bytes32[3] memory data = privacyInstance.data();
-        bytes32 key = keccak256(data[2]);
+
+        // Retrieve the key from the data array
+        bytes32 key = privacyInstance.data(2); // Assumes there's a getter function for data array in Privacy contract
         bytes16 key16 = bytes16(key);
-        console.log("Before: ", privacyInstance.locked());
+
+        // Unlock the contract
+        console.log("Before unlocking: ", privacyInstance.locked());
         privacyInstance.unlock(key16);
-        console.log("After: ", privacyInstance.locked());
+        console.log("After unlocking: ", privacyInstance.locked());
+
+        // Stop the broadcast
         vm.stopBroadcast();
     }
 }
